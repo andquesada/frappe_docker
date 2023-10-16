@@ -39,6 +39,7 @@ services:
     depends_on: {}
 
   backend:
+    platform: linux/arm64
     <<: *backend_defaults
 
   frontend:

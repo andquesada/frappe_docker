@@ -43,6 +43,7 @@ services:
     restart: on-failure
 
   backend:
+    platform: linux/arm64
     <<: *backend_defaults
     platform: linux/amd64
 

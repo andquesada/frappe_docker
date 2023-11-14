@@ -3,6 +3,7 @@ version: "3"
 services:
   backend:
     image: frappe/erpnext:v15.58.2
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:
@@ -19,6 +20,7 @@ services:
 
   configurator:
     image: frappe/erpnext:v15.58.2
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:
@@ -34,7 +36,6 @@ services:
         bench set-config -gp db_port $$DB_PORT;
         bench set-config -g redis_cache "redis://$$REDIS_CACHE";
         bench set-config -g redis_queue "redis://$$REDIS_QUEUE";
-        bench set-config -g redis_socketio "redis://$$REDIS_QUEUE";
         bench set-config -gp socketio_port $$SOCKETIO_PORT;
     environment:
       DB_HOST: db
@@ -48,6 +49,7 @@ services:
 
   create-site:
     image: frappe/erpnext:v15.58.2
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:
@@ -81,6 +83,7 @@ services:
 
   db:
     image: mariadb:10.6
+    platform: linux/amd64
     networks:
       - frappe_network
     healthcheck:
@@ -103,6 +106,7 @@ services:
 
   frontend:
     image: frappe/erpnext:v15.58.2
+    platform: linux/amd64
     networks:
       - frappe_network
     depends_on:
@@ -129,6 +133,7 @@ services:
 
   queue-long:
     image: frappe/erpnext:v15.58.2
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:
@@ -138,13 +143,14 @@ services:
       - bench
       - worker
       - --queue
-      - long,default,short
+      - long
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
 
   queue-short:
     image: frappe/erpnext:v15.58.2
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:
@@ -154,13 +160,14 @@ services:
       - bench
       - worker
       - --queue
-      - short,default
+      - short
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
 
   redis-queue:
     image: redis:6.2-alpine
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:
@@ -171,6 +178,7 @@ services:
 
   redis-cache:
     image: redis:6.2-alpine
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:
@@ -179,6 +187,7 @@ services:
 
   scheduler:
     image: frappe/erpnext:v15.58.2
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:
@@ -193,6 +202,7 @@ services:
 
   websocket:
     image: frappe/erpnext:v15.58.2
+    platform: linux/amd64
     networks:
       - frappe_network
     deploy:

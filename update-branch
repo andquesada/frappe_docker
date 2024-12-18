@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Function to display usage
+usage() {
+    echo "Usage: $0 <main-branch> <testing-branch> <mac-working-branch>"
+    exit 1
+}
+
+# Check if the correct number of arguments is provided
+if [ "$#" -ne 3 ]; then
+    usage
+fi
+
+MAIN_BRANCH=$1
+TESTING_BRANCH=$2
+MAC_WORKING_BRANCH=$3
+TEMP_BRANCH="temp-branch"
+
+# Check out the mac-working branch to get the latest 6 commits
+git checkout $MAC_WORKING_BRANCH || { echo "Failed to checkout branch $MAC_WORKING_BRANCH"; exit 1; }
+
+# Get the latest 6 commit hashes from the mac-working branch
+LATEST_COMMITS=$(git log -n 6 --pretty=format:"%H")
+
+# Attempt to delete the temporary branch if it exists
+git branch -D $TEMP_BRANCH 2>/dev/null
+
+# Create a temporary branch to save the latest 6 commits
+git checkout -b $TEMP_BRANCH || { echo "Failed to create temporary branch $TEMP_BRANCH"; exit 1; }
+
+# Attempt to delete the testing branch if it exists
+git branch -D $TESTING_BRANCH 2>/dev/null
+
+# Create the testing branch from the main branch
+git checkout -b $TESTING_BRANCH $MAIN_BRANCH || { echo "Failed to create branch $TESTING_BRANCH from $MAIN_BRANCH"; exit 1; }
+
+# Rebase the testing branch onto the main branch
+git rebase $MAIN_BRANCH || { echo "Failed to rebase branch $TESTING_BRANCH onto $MAIN_BRANCH"; exit 1; }
+
+# Cherry-pick the latest 6 commits from the temporary branch
+for COMMIT in $LATEST_COMMITS; do
+    git cherry-pick $COMMIT || { echo "Failed to cherry-pick commit $COMMIT"; exit 1; }
+done
+
+# Delete the temporary branch
+git branch -d $TEMP_BRANCH || { echo "Failed to delete temporary branch $TEMP_BRANCH"; exit 1; }
+
+echo "Successfully rebased $TESTING_BRANCH onto $MAIN_BRANCH and kept the latest 6 commits from $MAC_WORKING_BRANCH at the top."

@@ -1,4 +1,4 @@
 #!/bin/bash
 
 set-term-title 'ERP Next'
-cd "/Users/minquesa/Documents/Instaladores/ERP/ERPNext/frappe_docker" && docker compose --file pwd.yml up
+cd "/Users/minquesa/Documents/Instaladores/ERPNext" && docker compose --file pwd.yml up

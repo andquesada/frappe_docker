@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cd "/Users/minquesa/Documents/Instaladores/ERP/ERPNext/frappe_docker" && docker compose --file pwd.yml down
+cd "/Users/minquesa/Documents/Instaladores/ERPNext" && docker compose --file pwd.yml down
